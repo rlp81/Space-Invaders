@@ -3,7 +3,7 @@ import time
 import pygame
 import json
 from pygame.display import update
-
+#made by coal
 from pygame.event import get
 pygame.font.init()
 assets = "assets"
