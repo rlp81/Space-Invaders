@@ -1,1 +1,1 @@
-Do not edit assets because it will not allow the python file to get the needed pictures.
+Do not edit assets because it will not allow the python file to get the needed pictures and storage files.
