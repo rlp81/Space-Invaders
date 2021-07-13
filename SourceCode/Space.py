@@ -186,16 +186,24 @@ def main():
         player.draw(WIN)
 
         if lost:
+            with open(".\\assets\\control.json", "r") as f:
+                controls = json.load(f)
             lost_label = lost_font.render("GAME OVER", 1, (255,255,255))
-            lost_label1 = lost_font.render("Push space to try again", 1, (255,255,255))
-            lost_label2 = lost_font.render("Push ESCAPE to quit", 1, (255,255,255))
-            WIN.blit(lost_label, (WIDTH/2 - lost_label.get_width()/2, 300))
-            WIN.blit(lost_label1, (WIDTH/2 - lost_label1.get_width()/2, 350))
-            WIN.blit(lost_label2, (WIDTH/2 - lost_label2.get_width()/2, 400))
+            lost_label1 = lost_font.render("Play Again", 1, (0,0,0))
+            lost_label2 = lost_font.render(f"Push ESCAPE to quit or {controls['menu']} to menu", 1, (255,255,255))
+            button = pygame.Rect(260, 350, 280, 50)
+            pygame.draw.rect(WIN, [255, 255, 255], button)
+            WIN.blit(lost_label, (WIDTH/2 - lost_label.get_width()/2, 250))
+            WIN.blit(lost_label1, (WIDTH/2 - lost_label1.get_width()/2, 357))
+            WIN.blit(lost_label2, (WIDTH/2 - lost_label2.get_width()/2, 450))
             for event in pygame.event.get():
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_SPACE:
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    mousepos = event.pos
+                    if button.collidepoint(mousepos):
                         main()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.key.key_code(controls["menu"]):
+                        main_menu()
                     if event.key == pygame.K_ESCAPE:
                         pygame.quit()
                         quit()
@@ -267,6 +275,8 @@ def main():
             player.y += player_vel
         if keys[cshoot]:
             player.shoot()
+        if keys[pygame.K_l]:
+            lost = True
         if keys[cmenu]:
             score = str(player.score)
             if int(highscore) < player.score:
@@ -428,14 +438,16 @@ def control():
                 
                     
 def cmenu():
+    with open(".\\assets\\control.json", "r") as f:
+        controls = json.load(f)
     title_font = pygame.font.SysFont("comicsans", 30)
     back_font = pygame.font.SysFont("Arial", 30)
     run = True
     while run:
         WIN.blit(BG, (0,0))
         title_label2 = title_font.render("Game Controls", 1, (255,255,255))
-        title_label = title_font.render("WASD & Arrow keys to move, escape to quit, and MB1 to shoot.", 1, (255,255,255))
-        title_label1 = title_font.render("M to go back to menu", 1, (255,255,255))
+        title_label = title_font.render(f"{controls['up']} {controls['left']} {controls['down']} {controls['right']} & Arrow keys to move, {controls['quit']} to quit, and {controls['shoot']} to shoot.", 1, (255,255,255))
+        title_label1 = title_font.render(f"{controls['menu']} to go back to menu", 1, (255,255,255))
         menu_label = back_font.render("Back", 1, (0,0,0))
         control_label = back_font.render("Edit_Controls", 1, (0,0,0))
         WIN.blit(title_label, (WIDTH/2 - title_label.get_width()/2, 350))
