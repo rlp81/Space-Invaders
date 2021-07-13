@@ -3,7 +3,7 @@ import time
 import pygame
 import json
 from pygame.display import update
-#made by coal
+
 from pygame.event import get
 pygame.font.init()
 assets = "assets"
@@ -80,7 +80,7 @@ class Ship:
         if self.cool_down_counter == 0:
             laser = Laser(self.x, self.y, self.laser_img)
             self.lasers.append(laser)
-            self.cool_down_counter = 1
+            self.cool_down_counter = .1
 
     def get_width(self):
         return self.ship_img.get_width()
