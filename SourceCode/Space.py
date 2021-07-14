@@ -2,9 +2,7 @@ import random
 import time
 import pygame
 import json
-from pygame.display import update
 
-from pygame.event import get
 pygame.font.init()
 assets = "assets"
 WIDTH, HEIGHT = 800, 750
@@ -74,7 +72,7 @@ class Ship:
         if self.cool_down_counter >= self.COOLDOWN:
             self.cool_down_counter = 0
         elif self.cool_down_counter > 0:
-            self.cool_down_counter += 1
+            self.cool_down_counter += .1
 
     def shoot(self):
         if self.cool_down_counter == 0:
@@ -330,8 +328,9 @@ def control():
     title_font = pygame.font.SysFont("Arial", 30)
     run = True
     while run:
-        with open(".\\assets\\control.json", "r") as f:
+        with open(".\\assets\\control.json") as f:
             controls = json.load(f)
+        cquit = pygame.key.key_code(controls["quit"])
         WIN.blit(BG, (0,0))
         up = title_font.render(f"Up: {controls['up']}", 1, (0,0,0))
         down = title_font.render(f"Down: {controls['down']}", 1, (0,0,0))
@@ -385,7 +384,7 @@ def control():
         pygame.display.update()
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
+                if event.key == cquit:
                     run = False
                     pygame.quit()
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -436,10 +435,11 @@ def control():
                     with open(".\\assets\\control.json", "w") as f:
                         json.dump(controls,f)
                 
-                    
+       
 def cmenu():
-    with open(".\\assets\\control.json", "r") as f:
-        controls = json.load(f)
+    with open(".\\assets\\control.json") as f:
+            controls = json.load(f)
+    cquit = pygame.key.key_code(controls["quit"])
     title_font = pygame.font.SysFont("comicsans", 30)
     back_font = pygame.font.SysFont("Arial", 30)
     run = True
@@ -462,7 +462,7 @@ def cmenu():
         pygame.display.update()
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
+                if event.key == cquit:
                     run = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = event.pos
@@ -475,6 +475,9 @@ def cmenu():
     pygame.quit()
 
 def main_menu():
+    with open(".\\assets\\control.json") as f:
+            controls = json.load(f)
+    cquit = pygame.key.key_code(controls["quit"])
     title_font = pygame.font.SysFont("comicsans", 70)
     menu_font = pygame.font.SysFont("Arial", 30)
     run = True
@@ -492,13 +495,13 @@ def main_menu():
         WIN.blit(title_label, (WIDTH/2 - title_label.get_width()/2, 150))
         WIN.blit(menu_label, (WIDTH/2 - menu_label.get_width()/2, 507))
         WIN.blit(play_label, (WIDTH/2 - play_label.get_width()/2, 350))
-        WIN.blit(YELLOW_SPACE_SHIP, (WIDTH/2 - play_label.get_width()/2, 50))
+        WIN.blit(YELLOW_SPACE_SHIP, (WIDTH/2 - YELLOW_SPACE_SHIP.get_width()/2, 50))
         pygame.display.update()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
+                if event.key == cquit:
                     run = False
                     pygame.quit()
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -511,7 +514,29 @@ def main_menu():
                     main()
 
 
-    pygame.quit()
+def load():
+    rans = [1,2,3,4]
+    WIN.blit(BG, (0,0))
+    title_font = pygame.font.SysFont("comicsans", 70)
+    loading = True
+    size = 10
+    pos = (WIDTH/2 - 400/2)
+    load = pygame.Rect(pos, 500, 400, 50)
+    pygame.draw.rect(WIN, [255, 255, 255], load)
+    WIN.blit(YELLOW_SPACE_SHIP, (WIDTH/2 - YELLOW_SPACE_SHIP.get_width()/2, 200))
+    while loading:
+        load_label = title_font.render("Loading", 1, (0,0,0))
+        load1 = pygame.Rect(pos, 500, size, 50)
+        pygame.draw.rect(WIN, [0, 255, 0], load1)
+        WIN.blit(load_label, (WIDTH/2 - load_label.get_width()/2, 500))
+        if size == 400:
+            loading = False
+            main_menu()
+        if not size == 400:
+            size += 10
+            pygame.display.update()
+            time.sleep(.2)
 
 
-main_menu()
+
+load()
