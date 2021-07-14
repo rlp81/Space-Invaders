@@ -515,10 +515,11 @@ def main_menu():
 
 
 def load():
-    rans = [1,2,3,4]
     WIN.blit(BG, (0,0))
     title_font = pygame.font.SysFont("comicsans", 70)
     loading = True
+    title_label = title_font.render("Space Invaders", 1, (0,0,255))
+    WIN.blit(title_label, (WIDTH/2 - title_label.get_width()/2, 300))
     size = 10
     pos = (WIDTH/2 - 400/2)
     load = pygame.Rect(pos, 500, 400, 50)
