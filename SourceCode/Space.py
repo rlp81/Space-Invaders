@@ -72,7 +72,7 @@ class Ship:
         if self.cool_down_counter >= self.COOLDOWN:
             self.cool_down_counter = 0
         elif self.cool_down_counter > 0:
-            self.cool_down_counter += .1
+            self.cool_down_counter += 1
 
     def shoot(self):
         if self.cool_down_counter == 0:
