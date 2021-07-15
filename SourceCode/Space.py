@@ -534,9 +534,9 @@ def load():
             loading = False
             main_menu()
         if not size == 400:
-            size += 10
+            size += 1
             pygame.display.update()
-            time.sleep(.2)
+            time.sleep(.02)
 
 
 
