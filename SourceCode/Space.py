@@ -539,5 +539,4 @@ def load():
             time.sleep(.2)
 
 
-#test
 load()
