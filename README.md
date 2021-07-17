@@ -3,6 +3,7 @@ To install python go to https://www.python.org/downloads
 Download and install the latest or recommended version.
 When in the installer check Add To Path
 Then run setup.py to install the needed libraries for this game.
+Credits to Tech With Tim on youtube for the base code Video: https://www.youtube.com/watch?v=Q-__8Xw9KTM
 ![image](https://user-images.githubusercontent.com/58034254/126046094-7fef7870-b326-4eb3-89c9-6bad2cf3f064.png)
 ![image](https://user-images.githubusercontent.com/58034254/125506926-a4aba0ba-7ea9-45e3-a844-b91d6d7edda6.png)
 ![image](https://user-images.githubusercontent.com/58034254/125506994-0782d732-70a4-4ee1-9f45-e387758f258c.png)
