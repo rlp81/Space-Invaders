@@ -2,7 +2,6 @@ import random
 import time
 import pygame
 import json
-from playsound import playsound
 pygame.font.init()
 assets = "assets"
 pygame.mixer.init()
@@ -509,13 +508,13 @@ def main_menu():
     run = True
     while run:
         WIN.blit(BG, (0,0))
-        for i in range(2):
+        for i in range(5):
             ship = cutscenes(random.randint(-200, 1), random.randint(1, 800))
             ships.append(ship)
-            ship.draw3(WIN)
+            ship.draw(WIN)
         for ship in ships[:]:
             ship.move(10)
-            ship.draw3(WIN)
+            ship.draw(WIN)
             maxvel = ship.hiet(700)
             if maxvel:
                 ships.remove(ship)
@@ -586,14 +585,12 @@ def cutscene1():
                 done = True
                 pos += 2
                 WIN.blit(YELLOW_SPACE_SHIP, (pos, 600))
-                pygame.display.update()
         if shipvel == 1:
             if done == False:
                 shipvel = 0
                 done = True
                 pos -= 2
                 WIN.blit(YELLOW_SPACE_SHIP, (pos, 600))
-                pygame.display.update()
         time += 1
         if time == 200:
             run = False
