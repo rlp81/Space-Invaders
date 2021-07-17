@@ -2,7 +2,6 @@ import random
 import time
 import pygame
 import json
-from playsound import playsound
 pygame.font.init()
 assets = "assets"
 pygame.mixer.init()
