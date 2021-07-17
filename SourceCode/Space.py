@@ -2,20 +2,23 @@ import random
 import time
 import pygame
 import json
-
+from playsound import playsound
 pygame.font.init()
 assets = "assets"
+pygame.mixer.init()
 WIDTH, HEIGHT = 800, 750
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Space Invaders")
 RED_SPACE_SHIP = pygame.image.load(".\\assets\\pixel_ship_red_small.png")
 GREEN_SPACE_SHIP = pygame.image.load(".\\assets\\pixel_ship_green_small.png")
+pygame.mixer.music.load(".\\assets\\laser.mp3")
 BLUE_SPACE_SHIP = pygame.image.load(".\\assets\\pixel_ship_blue_small.png")
 YELLOW_SPACE_SHIP = pygame.image.load(".\\assets\\pixel_ship_yellow.png")
 RED_LASER = pygame.image.load(".\\assets\\pixel_laser_red.png")
 GREEN_LASER = pygame.image.load(".\\assets\\pixel_laser_green.png")
 BLUE_LASER = pygame.image.load(".\\assets\\pixel_laser_blue.png")
 YELLOW_LASER = pygame.image.load(".\\assets\\pixel_laser_yellow.png")
+WHITE_LINE = pygame.image.load(".\\assets\\pixel_white_line.png")
 back = pygame.image.load(".\\assets\\background-black.png")
 BG = pygame.transform.scale(back, (WIDTH, HEIGHT))
 pygame.display.set_icon(YELLOW_SPACE_SHIP)
@@ -39,6 +42,26 @@ class Laser:
     def collision(self, obj):
         return collide(self, obj)
 
+class cutscenes:
+    def __init__(self, y, x):
+        self.ship1 = YELLOW_SPACE_SHIP
+        self.y = y
+        self.x = x
+        self.line = WHITE_LINE
+        self.enemy = RED_SPACE_SHIP
+    def move(self, vel):
+        self.y += vel
+    def draw(self, window):
+        window.blit(self.line, (self.x, self.y))
+    def draw2(self, window):
+        window.blit(self.ship1, (self.x, self.y))
+    def draw3(self, window):
+        window.blit(self.enemy, (self.x, self.y))
+    def ship(self, vel):
+        self.y -= vel
+    def hiet(self, num):
+        if self.y >= num:
+            return True
 
 class Ship:
     COOLDOWN = 30
@@ -79,6 +102,7 @@ class Ship:
             laser = Laser(self.x, self.y, self.laser_img)
             self.lasers.append(laser)
             self.cool_down_counter = .1
+            pygame.mixer.music.play()
 
     def get_width(self):
         return self.ship_img.get_width()
@@ -137,7 +161,7 @@ class Enemy(Ship):
         if self.cool_down_counter == 0:
             laser = Laser(self.x-20, self.y, self.laser_img)
             self.lasers.append(laser)
-            self.cool_down_counter = .5
+            self.cool_down_counter = 1
 
 
 def collide(obj1, obj2):
@@ -210,7 +234,7 @@ def main():
         pygame.display.update()
 
     while run is True:
-        with open(f".\\{assets}\\highscore.score", "r") as f:
+        with open(f".\\assets\\highscore.score", "r") as f:
             hscore = f.read()
         with open(".\\assets\\control.json") as f:
             controls = json.load(f)
@@ -476,13 +500,25 @@ def cmenu():
 
 def main_menu():
     with open(".\\assets\\control.json") as f:
-            controls = json.load(f)
+        controls = json.load(f)
     cquit = pygame.key.key_code(controls["quit"])
+    ships = []
+    vel = 0
     title_font = pygame.font.SysFont("comicsans", 70)
     menu_font = pygame.font.SysFont("Arial", 30)
     run = True
     while run:
         WIN.blit(BG, (0,0))
+        for i in range(2):
+            ship = cutscenes(random.randint(-200, 1), random.randint(1, 800))
+            ships.append(ship)
+            ship.draw3(WIN)
+        for ship in ships[:]:
+            ship.move(10)
+            ship.draw3(WIN)
+            maxvel = ship.hiet(700)
+            if maxvel:
+                ships.remove(ship)
         title_label = title_font.render("Space Invaders But Python", 1, (0,0,255))
         title_label1 = title_font.render("By Coal", 1, (255,255,0))
         play_label = title_font.render("Play", 1, (0,0,0))
@@ -512,7 +548,57 @@ def main_menu():
                 if button1.collidepoint(mouse_pos):
                     run = False
                     main()
-
+def cutscene2():
+    pos = 600
+    run = True
+    while run:
+        WIN.blit(BG, (0,0))
+        WIN.blit(YELLOW_SPACE_SHIP, (WIDTH/2 - YELLOW_SPACE_SHIP.get_width()/2, pos))
+        pos -= 10
+        pygame.display.update()
+        if pos <= -30:
+            main_menu()
+def cutscene1():
+    shipvel = 0
+    done = False
+    pos = WIDTH/2 - YELLOW_SPACE_SHIP.get_width()/2
+    vel = 10
+    run = True
+    time = 0 
+    lines = []
+    WIN.blit(BG, (0,0))
+    while run:
+        done = False
+        WIN.blit(BG, (0,0))
+        for i in range(2):
+            line = cutscenes(random.randint(-200, 1), random.randint(1, 800))
+            lines.append(line)
+            line.draw(WIN)
+        for line in lines[:]:
+            line.move(vel)
+            line.draw(WIN)
+            maxvel = line.hiet(700)
+            if maxvel:
+                lines.remove(line)
+        if shipvel == 0:
+            if done == False:
+                shipvel = 1
+                done = True
+                pos += 2
+                WIN.blit(YELLOW_SPACE_SHIP, (pos, 600))
+                pygame.display.update()
+        if shipvel == 1:
+            if done == False:
+                shipvel = 0
+                done = True
+                pos -= 2
+                WIN.blit(YELLOW_SPACE_SHIP, (pos, 600))
+                pygame.display.update()
+        time += 1
+        if time == 200:
+            run = False
+        pygame.display.update()
+    cutscene2()
 
 def load():
     WIN.blit(BG, (0,0))
@@ -532,7 +618,7 @@ def load():
         WIN.blit(load_label, (WIDTH/2 - load_label.get_width()/2, 500))
         if size == 400:
             loading = False
-            main_menu()
+            cutscene1()
         if not size == 400:
             size += 1
             pygame.display.update()
