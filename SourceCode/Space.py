@@ -190,7 +190,6 @@ def main():
     lost_count = 0
     def redraw_window():
         WIN.blit(BG, (0,0))
-        # draw text
         lives_label = main_font.render(f"Lives: {lives}", 1, (255,255,255))
         level_label = main_font.render(f"Level: {level}", 1, (255,255,255))
         score_label = main_font.render(f"Score: {player.score}", 1, (255,255,255))
@@ -557,16 +556,22 @@ def cutscene2():
         pygame.display.update()
         if pos <= -30:
             main_menu()
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                pass
 def cutscene1():
     shipvel = 0
     done = False
     pos = WIDTH/2 - YELLOW_SPACE_SHIP.get_width()/2
     vel = 10
     run = True
-    time = 0 
+    spacepos = 0
     lines = []
     WIN.blit(BG, (0,0))
+    title_font = pygame.font.SysFont("comicsans", 70)
+    title_label = title_font.render("Press space to start", 1, (255,255,255))
     while run:
+        spacepos += 10
         done = False
         WIN.blit(BG, (0,0))
         for i in range(2):
@@ -591,11 +596,17 @@ def cutscene1():
                 done = True
                 pos -= 2
                 WIN.blit(YELLOW_SPACE_SHIP, (pos, 600))
-        time += 1
-        if time == 200:
-            run = False
+        if spacepos >= 700:
+            spacepos = 0
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                pass
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    run = False
+                    cutscene2()
+        WIN.blit(title_label, (WIDTH/2 - title_label.get_width()/2, spacepos))
         pygame.display.update()
-    cutscene2()
 
 def load():
     WIN.blit(BG, (0,0))
@@ -620,7 +631,8 @@ def load():
             size += 1
             pygame.display.update()
             time.sleep(.02)
-
-
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                pass
 
 load()
